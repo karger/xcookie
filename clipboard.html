@@ -1,0 +1,64 @@
+<html>
+<head>
+<title>
+Cross-Site Clipboard Test
+</title>
+</head>
+<body>
+<h1>Cross-Site Cookie/Clipboard Demonstration</h1>
+
+This page demonstrates cross-site cookies by implementing a cross-site
+clipboard you can use to programmatically copy and paste data between
+sites.  It uses the cross-site cookie server implemented in
+in <a href="cookie-server.html">cookie-server.html</a>
+and <a href="cookie-server.js">cookie-server.js</a>, which uses the
+html5 window.postMessage method.  To use it, load
+the <a href="cookie-service.js">cookie-service.js</a> script.  You can
+then call <code>CookieService.setCookie("clipboard", 
+data)</code> to store some data in the clipboard, and
+<code>CookieService.getCookie("clipboard", callback)</code> to specify that the
+function callback should be invoked with the current clipboard data as
+its sole argument.
+
+<p>
+Note that by design anyone can read the clipboard, so you shouldn't
+store sensitive data in it.  Also note that the cookie server works by
+setting
+so-called <a href="http://www.bobulous.org.uk/misc/third-party-cookies.html">third-party
+    cookies</a>, so a browser set to block those won't be able to use
+the clipboard.
+<p>
+How does it work?  The clipboard is stored as a cookie associated with
+the clip-server.html page.  <code>window.postMessage</code> is used to deliver
+messages to/from a frame holding the clip-server.html page; javascript
+on that page responds to messages by reading or writing the cookie
+and using <code>window.postMessage</code> to return the result if necessary.
+<p>
+Below is a small inspection screen for testing the clipboard.  Type to
+change the clipboard; click "refresh" to update/paste from the
+clipboard after changing the clipboard elsewhere:
+<p>
+Current clipboard:
+<textarea id="clipboard"></textarea>
+<div><input type="button" value="Refresh" id="button"></div>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="cookie-service.js"></script>
+
+<script>
+//debug tools
+board = MakeCookieService();
+showClip = function() {
+    board.getCookie("clipboard", function(data) {
+	    $("#clipboard").val(data);
+	});
+};
+
+$("#clipboard").change(function () {
+	board.setCookie("clipboard", $("#clipboard").val(), 7);
+    });
+
+$("#button").click(showClip);
+showClip();
+</script>
+</body>
