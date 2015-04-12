@@ -9,10 +9,29 @@
 MakeCookieService = function(url) {
     
     var 
-    url = url || "http://people.csail.mit.edu/karger/Cookie/cookie-server.html",
+    url = url || "http://people.csail.mit.edu/karger/Projects/Cookie/cookie-server.html",
     serverWindow,
     frame,
-    loading = $.Deferred();
+    loading = {
+        pending: [],
+        resolved = false,
+        resolve: function () {
+            var i;
+
+            resolved = true;
+            for (i=0; i<pending.length; i++) {
+                (pending[i])();
+            }
+        },
+        done: function (f) {
+            if (resolved) {
+                f();
+            } else {
+                pending.push(f);
+            }
+        }
+    }
+    ;
 
 
     var init = function() {
@@ -25,10 +44,10 @@ MakeCookieService = function(url) {
 	    loading.resolve();
 	}
 	window.addEventListener("message", onLoad, false);
-	frame = $('<iframe src="' + url + '"></iframe>'); //server will send
-							  //message on load
-	frame.hide();
-	$("body").append(frame);
+        frame = document.createElement('iframe');
+        frame.src = url;
+        frame.style.display = 'none';
+	document.body.appendChild(frame);
     };
 
 
