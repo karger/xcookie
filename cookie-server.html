@@ -18,16 +18,16 @@ Note that by design anyone can read these cookies, so you shouldn't
 store sensitive data in them.  Also note that the cookie server works by
 setting
 so-called <a href="http://www.bobulous.org.uk/misc/third-party-cookies.html">third-party
-cookies</a>, so a browser set to block those won't be able to use the
-clipboard.
+cookies</a>, so a browser set to block those won't be able to use this tool.
 <p>
 To use this protocol, just load
 the <a href="cookie-service.js">cookie-service.js</a> script.  You can
-then call <code>CookieService.setCookie("clipboard", data)</code> to
-store some data in the clipboard, and
-<code>CookieService.getCookie("clipboard", callback)</code> to specify that the
-function callback should be invoked with the current clipboard data as
-its sole argument.
+then call <code>CookieService.setCookie("cookiename", data)</code> to
+store some data in the cookie, and
+<code>CookieService.getCookie("cookiename", callback)</code> to
+specify that the function callback should be invoked with the current
+cookie data as its sole argument.  Note that since asynchronous
+messaging is used, a callback must be used to receive the value of a cookie.
 <p>
 How does it work? The cookie is associated with
 this cookie-server.html page.  cookie-server.html loads cookie-server.js which
@@ -36,26 +36,27 @@ events asking it to get/set the cookie value; it does so by
 accessing the cookie and using window.postMessage to return the result
 if necessary.
 <p>
-Below is a small inspection screen for testing the value of the cookie
-named "clipboard".  Type to change the clipboard cookie; click "refresh" to
-update/paste from the clipboard after changing the clipboard
-elsewhere:
+Below is a small inspection screen for testing the library.  Type to
+change the clipboard cookie; or click "refresh" to update/paste from the
+clipboard after changing the clipboard elsewhere:
 <p>
-<div><textarea id="clipboard"></textarea></div>
+<div><input type="textfield" id="cookie-name" value="clipboard"></input></div>
+<div><textarea id="cookie-value"></textarea></div>
 <div><input type="button" value="Refresh" id="button"></div>
 
 <script src="cookie-server.js"></script>
 
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 
 <script>
 //debug/inspect scripts
 CookieServer.show = function() {
-    $("#clipboard").val(CookieServer.getCookie("clipboard"));
+    $("#cookie-value").val(CookieServer.getCookie($("#cookie-name").val()));
 };
 
-$("#clipboard").change(function () {
-	CookieServer.setCookie("clipboard", $("#clipboard").val(), 7);
+$("#cookie-name, #cookie-value").change(function () {
+	CookieServer.setCookie($("#cookie-name", 
+                               $("#cookie-value").val(), 7));
     });
 
 $("#button").click(CookieServer.show);
