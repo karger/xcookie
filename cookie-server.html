@@ -8,21 +8,28 @@ Cross-Site Cookie Implementation
 <H1>Cross-Site Cookie Server Page</H1> 
 
 This page implements a cross-site cookie functionality using the html5
-window.postMessage method.  It is not intended to be visited by human
-beings; instead it is loaded by the cookie service to provide a
-rendezvous for clients.
-
-The cookie server provides an RPC protocol (via window.PostMessage)
-for setting and getting cookies on the domain of this page.
+window.postMessage method.  Besides providing documentation, this page
+exists to be loaded by the cross-site cookie service to provide a
+rendezvous for clients.  It in turn provides an RPC protocol (via
+window.PostMessage) for setting and getting cookies on the domain of
+this page.
 <p>
 Note that by design anyone can read these cookies, so you shouldn't
-store sensitive data in it.  Also note that the cookie server works by
+store sensitive data in them.  Also note that the cookie server works by
 setting
 so-called <a href="http://www.bobulous.org.uk/misc/third-party-cookies.html">third-party
 cookies</a>, so a browser set to block those won't be able to use the
 clipboard.
 <p>
-How does it work? The  cookie is associated with
+To use this protocol, just load
+the <a href="cookie-service.js">cookie-service.js</a> script.  You can
+then call <code>CookieService.setCookie("clipboard", data)</code> to
+store some data in the clipboard, and
+<code>CookieService.getCookie("clipboard", callback)</code> to specify that the
+function callback should be invoked with the current clipboard data as
+its sole argument.
+<p>
+How does it work? The cookie is associated with
 this cookie-server.html page.  cookie-server.html loads cookie-server.js which
 implements the cookie server.  It listens for window.postMessage
 events asking it to get/set the cookie value; it does so by
